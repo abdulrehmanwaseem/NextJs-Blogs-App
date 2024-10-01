@@ -1,0 +1,182 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["tracing"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL") 
+}
+
+enum UserRole {
+  ADMIN
+  USER
+  AUTHOR
+}
+
+model User {
+  id                  String                  @id @default(cuid())
+  name                String?
+  email               String?                 @unique
+  emailVerified       DateTime?
+  image               String?
+  imagePublicId       String? 
+  password            String?  
+  bio                 String?
+  role                UserRole                @default(USER)
+  isTwoFactorEnabled  Boolean                 @default(false)
+  twoFactorConfirmation TwoFactorConfirmation?
+
+  accounts            Account[]
+  blogs               Blog[]
+  comments            Comment[]
+  ratings             Rating[]  
+  likes               Like[]  
+  report              Report[]
+
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
+}
+
+model Account {
+  userId              String
+  type                String
+  provider            String
+  providerAccountId   String
+  refresh_token       String?
+  access_token        String?
+  expires_at          Int?
+  token_type          String?
+  scope               String?
+  id_token            String?
+  session_state       String?
+
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
+
+  user                User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+}
+
+model VerificationToken {
+  id                  String                  @id @default(cuid())
+  email               String        
+  token               String                  @unique
+  expires             DateTime
+
+  @@unique([email, token])
+}
+
+model PasswordResetToken {
+  id                  String                  @id @default(cuid())
+  email               String        
+  token               String                  @unique
+  expires             DateTime
+
+  @@unique([email, token])
+}
+
+model TwoFactorToken {
+  id                  String                  @id @default(cuid())
+  email               String
+  token               String                  @unique      
+  expires             DateTime
+
+  @@unique([email, token])
+}
+
+model TwoFactorConfirmation { // Used for verifying the two-factor confirmation, it acts as a session of 2FA
+  id                  String                  @id @default(cuid())
+  userId              String
+  user                User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId])
+}
+
+model Contact {
+  id                  String                  @id @default(cuid())
+  email               String
+  subject             String
+  message             String
+  createdAt           DateTime                @default(now())
+}
+
+model Blog {
+  id                  String                  @id @default(cuid())
+  title               String
+  description         String
+  content             String
+  image               String
+  imagePublicId       String
+  authorId            String?
+  author              User?                   @relation(fields: [authorId], references: [id], onDelete: SetNull)
+
+  comments            Comment[]
+  ratings             Rating[]
+
+  createdAt           DateTime                @default(now())
+}
+
+model Like {
+  id                  String                  @id @default(cuid())
+  userId              String
+  commentId           String
+  createdAt           DateTime                @default(now())
+
+  comment             Comment                 @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user                User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId])
+}
+
+model Comment {
+  id                  String                  @id @default(cuid())
+  text                String
+  blogId              String
+  commentById         String?
+  parentId            String?        
+
+  blog                Blog                    @relation(fields: [blogId], references: [id])
+  commentBy           User?                   @relation(fields: [commentById], references: [id], onDelete: SetNull)
+  parent              Comment?     @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies             Comment[]    @relation("CommentReplies") 
+
+  likes               Like[]
+  reports     Report[]
+
+  createdAt           DateTime                @default(now())
+  updatedAt           DateTime                @updatedAt
+  
+  @@index([blogId])
+}
+
+model Rating {
+  id                  String                  @id @default(cuid())
+  rating              Int
+  blogId              String
+  userId              String
+  createdAt           DateTime                @default(now())
+
+  blog                Blog                    @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  user                User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([blogId])
+  @@unique([blogId, userId])
+}
+
+model Report {
+  id          String    @id @default(cuid())
+  reason      String
+  other       String?
+  commentId   String
+  reportedById String
+  
+  comment     Comment   @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  reportedBy  User      @relation(fields: [reportedById], references: [id], onDelete: Cascade)
+
+
+  createdAt   DateTime  @default(now())
+
+  @@index([commentId])
+}
