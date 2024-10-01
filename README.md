@@ -11,8 +11,6 @@ A comprehensive blogging platform built using Next.js, providing rich text conte
 - **Authentication:** NextAuth.js with Two-Factor Authentication (2FA)
 - **Image Storage:** Cloudinary
 - **Form Validation:** Zod
-- **State Management:** Redux (optional)
-- **Deployment:** Vercel
 
 ## Table of Contents
 
