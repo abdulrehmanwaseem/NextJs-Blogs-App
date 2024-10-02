@@ -1,5 +1,7 @@
 # Blogs App (Next.js)
 
+![Project Image](https://res.cloudinary.com/dgljsrfmk/image/upload/v1727892746/kk3ljasx18tzqfpkdr9t.png)
+
 **Note:** This project was developed approximately 12 days ago from now but is being pushed to GitHub now.
 
 A comprehensive blogging platform built using Next.js, providing rich text content support, user authentication, and role-based access control.
