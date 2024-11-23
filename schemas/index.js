@@ -111,6 +111,7 @@ export const ContactSchema = z.object({
     .max(500, {
       message: "Message cannot exceed 500 characters.",
     }),
+  honeyPot: z.string().optional(),
 });
 
 export const BlogSchema = z.object({

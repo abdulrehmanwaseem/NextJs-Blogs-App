@@ -11,6 +11,12 @@ body,
   transition-duration: 500ms;
 }
 
+.h-field {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+}
+
 .fade-out {
   animation: fadeOut 0.5s forwards;
 }

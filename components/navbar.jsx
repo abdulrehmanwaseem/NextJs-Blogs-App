@@ -43,10 +43,10 @@ export const Navbar = ({ user }) => {
   const links = [
     { label: "Home", href: "/" },
     { label: "Blogs", href: "/blogs" },
-    ...(user.role === "AUTHOR"
+    ...(user?.role === "AUTHOR"
       ? [{ label: "Create Blog", href: "/blogs/create" }]
       : []),
-    ...(user.role === "ADMIN"
+    ...(user?.role === "ADMIN"
       ? [{ label: "Dashbaord", href: "/dashboard" }]
       : []),
     { label: "Authors", href: "/authors" },
@@ -56,9 +56,9 @@ export const Navbar = ({ user }) => {
 
   return (
     <>
-      <div className="flex justify-center items-center pt-6 z-10 mx-4 lg:mx-0">
-        <nav className="flex items-center justify-between px-4 rounded-xl w-full max-w-screen-lg h-16 shadow-sm bg-secondary">
-          <div className="relative h-9 w-32">
+      <div className="z-10 flex items-center justify-center pt-6 mx-4 lg:mx-0">
+        <nav className="flex items-center justify-between w-full h-16 max-w-screen-lg px-4 shadow-sm rounded-xl bg-secondary">
+          <div className="relative w-32 h-9">
             <Image
               src={logoUrl}
               alt="logo"
@@ -67,7 +67,7 @@ export const Navbar = ({ user }) => {
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
-          <div className="hidden md:flex items-center gap-x-4">
+          <div className="items-center hidden md:flex gap-x-4">
             {links.map(({ label, href }) => (
               <Button
                 key={href}
@@ -107,7 +107,7 @@ export const Navbar = ({ user }) => {
           </div>
         </nav>
       </div>
-      <div className="fixed bottom-4 right-4 z-10">
+      <div className="fixed z-10 bottom-4 right-4">
         <ThemeToggle />
       </div>
     </>

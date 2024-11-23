@@ -5,13 +5,15 @@ import { sendEmail } from "@/lib/mail";
 import { ContactSchema } from "@/schemas";
 
 export const contact = async (values) => {
+  const { honeyPot } = values;
+  if (honeyPot) return { error: "Bot Detected!" };
+
   const validatedFields = ContactSchema.safeParse(values);
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
   }
 
   const { email, subject, message } = validatedFields.data;
-
   const user = await db.contact.create({
     data: {
       email,

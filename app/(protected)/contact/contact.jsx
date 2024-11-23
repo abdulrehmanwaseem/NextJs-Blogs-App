@@ -37,9 +37,11 @@ const Contact = () => {
       email: "",
       subject: "",
       message: "",
+      honeyPot: "",
     },
   });
   const onSubmit = (values) => {
+    console.log(values);
     startTransition(() => {
       handleFormSubmit(contact, values, setError, setSuccess);
     });
@@ -48,10 +50,10 @@ const Contact = () => {
   return (
     <Card className="w-lg">
       <CardHeader>
-        <h1 className="scroll-m-20 text-3xl text-center font-semibold tracking-tight">
+        <h1 className="text-3xl font-semibold tracking-tight text-center scroll-m-20">
           Contact Us
         </h1>
-        <CardDescription className="text-center leading-6">
+        <CardDescription className="leading-6 text-center">
           Got a technical issue? Want to send feedback about a beta feature?
           Need details <br /> about our Business plan? Let us know.
         </CardDescription>
@@ -112,11 +114,25 @@ const Contact = () => {
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="honeyPot"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="h-field">Honey Pot Input</FormLabel>
+                    <FormControl className="h-field">
+                      <Input {...field} className="h-field" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
             <FormError message={error} />
             <FormSuccess message={success} />
             <Button disabled={isPending} className="w-full" type="submit">
-              <BiSolidMessageDetail className="mr-1 h-4 w-4" />
+              <BiSolidMessageDetail className="w-4 h-4 mr-1" />
               Send message
             </Button>
           </form>
